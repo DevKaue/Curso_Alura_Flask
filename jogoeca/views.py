@@ -3,7 +3,7 @@ import os
 from flask import Flask, render_template, request, redirect, session, flash, url_for, send_from_directory
 from jogoteca import app, db
 from models import Jogos, Usuarios
-from helpers import recupera_imagem
+from helpers import recupera_imagem, deleta_arquivo
 import time
 
 @app.route('/')
@@ -71,6 +71,7 @@ def atualizar():
     arquivo = request.files['arquivo']
     upload_path = app.config['UPLOAD_PATH']
     timestamp = time.time()
+    deleta_arquivo(jogo.id)
     arquivo.save(f'{upload_path}/capa{jogo.id}-{timestamp}.jpg')
 
     return redirect(url_for('index'))
