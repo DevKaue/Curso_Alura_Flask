@@ -26,11 +26,20 @@ def criarJogo():
         return redirect(url_for('index'))
 
     novo_Jogo = Jogos(nome=nome, categoria=categoria, console=console)
-    db.Session.add(novo_Jogo)
-    db.Session.commit()
+    db.session.add(novo_Jogo)
+    db.session.commit()
 
     return redirect(url_for('index'))
 
+@app.route('/deletar/<int:id>')
+def deletar(id):
+    if 'usuario_logado' not in session or session['usuario_logado'] == None:
+        return redirect(url_for('login'))
+    jogo = Jogos.query.filter_by(id=id).delete()
+    db.session.commit()
+    flash('Jogo deletado com sucesso!')
+
+    return redirect(url_for('index'))
 
 @app.route('/editar/<int:id>')
 def editar(id):
