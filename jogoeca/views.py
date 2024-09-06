@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session, flash, url_for
+from flask import Flask, render_template, request, redirect, session, flash, url_for, send_from_directory
 from jogoteca import app, db
 from models import Jogos, Usuarios
 
@@ -29,13 +29,17 @@ def criarJogo():
     db.session.add(novo_Jogo)
     db.session.commit()
 
+    arquivo = request.files['arquivo']
+    upload_path = app.config['UPLOAD_PATH']
+    arquivo.save(f'{upload_path}/capa{novo_Jogo.id}.jpg')
+
     return redirect(url_for('index'))
 
 @app.route('/deletar/<int:id>')
 def deletar(id):
     if 'usuario_logado' not in session or session['usuario_logado'] == None:
         return redirect(url_for('login'))
-    jogo = Jogos.query.filter_by(id=id).delete()
+    Jogos.query.filter_by(id=id).delete()
     db.session.commit()
     flash('Jogo deletado com sucesso!')
 
@@ -85,3 +89,7 @@ def logout():
     session['usuario_logado'] = None
     flash('Logout efetuado com sucesso!')
     return redirect(url_for('login'))
+
+@app.route('/uploads/<nome_arquivo>')
+def imagem(nome_arquivo):
+    return send_from_directory('uploads', nome_arquivo)
