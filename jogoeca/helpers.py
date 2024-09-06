@@ -12,6 +12,7 @@ def recupera_imagem(id):
 
     return 'capa_padrao.jpg'
 
+#Função para deletar arquivo duplicado
 def deleta_arquivo(id):
     arquivo = recupera_imagem(id)
     if arquivo != 'capa_padrao.jpg':
