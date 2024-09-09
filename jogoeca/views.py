@@ -40,16 +40,6 @@ def criarJogo():
 
     return redirect(url_for('index'))
 
-@app.route('/deletar/<int:id>')
-def deletar(id):
-    if 'usuario_logado' not in session or session['usuario_logado'] == None:
-        return redirect(url_for('login'))
-    Jogos.query.filter_by(id=id).delete()
-    db.session.commit()
-    flash('Jogo deletado com sucesso!')
-
-    return redirect(url_for('index'))
-
 @app.route('/editar/<int:id>')
 def editar(id):
     if 'usuario_logado' not in session or session['usuario_logado'] == None:
@@ -68,11 +58,23 @@ def atualizar():
     db.session.add(jogo)
     db.session.commit()
 
+    # Verifica se um arquivo foi enviado e se o nome do arquivo não está vazio
     arquivo = request.files['arquivo']
     upload_path = app.config['UPLOAD_PATH']
     timestamp = time.time()
-    deleta_arquivo(jogo.id)
+    deleta_arquivo(id)
     arquivo.save(f'{upload_path}/capa{jogo.id}-{timestamp}.jpg')
+
+    return redirect(url_for('index'))
+
+@app.route('/deletar/<int:id>')
+def deletar(id):
+    if 'usuario_logado' not in session or session['usuario_logado'] == None:
+        return redirect(url_for('login'))
+
+    Jogos.query.filter_by(id=id).delete()
+    db.session.commit()
+    flash('Jogo deletado com sucesso!')
 
     return redirect(url_for('index'))
 
