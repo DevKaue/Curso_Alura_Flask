@@ -2,7 +2,7 @@ import os
 from wsgiref.validate import validator
 
 import validators
-from wtforms.fields.simple import StringField, SubmitField
+from wtforms.fields.simple import StringField, SubmitField, PasswordField
 
 from jogoteca import app
 from flask_wtf import FlaskForm
@@ -13,6 +13,11 @@ class FormularioJogo(FlaskForm):
     categoria = StringField('Categoria', [validators.DataRequired(), validators.Length(min=1,max=40)])
     console = StringField('Console', [validators.DataRequired(), validators.Length(min=1,max=20)])
     salvar = SubmitField('Salvar')
+
+class FormularioUsuario(FlaskForm):
+    nickname = StringField('Nickname', [validators.DataRequired(), validators.Length(min=1,max=20)])
+    senha = PasswordField('Senha', [validators.DataRequired(), validators.Length(min=1,max=100)])
+    login = SubmitField('Login')
 
 # função para recuperar imagem do jogo
 def recupera_imagem(id):
